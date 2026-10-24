@@ -22,7 +22,7 @@ function setup() {
     const old = media(false, true), next = media(true);
     const parent = { isConnected: true, css: { overflowX: 'hidden', overflowY: 'hidden' },
         querySelectorAll: () => [old, next],
-        getBoundingClientRect: () => ({ left: 347, top: 116, right: 1336, bottom: 672 }) };
+        getBoundingClientRect: () => ({ left: 347, top: 116, right: 1336, bottom: 672, width: 989, height: 556 }) };
     old.parentElement = next.parentElement = parent;
     const observed = [], unobserved = [];
     const observer = { observe: node => observed.push(node), unobserve: node => unobserved.push(node) };
@@ -83,6 +83,64 @@ test('closed panel remains closed after a player switch', () => {
     panel.s();
     assert.equal(panel.l, old);
     assert.equal(panel.g.style.display, 'none');
+});
+
+function preview() {
+    const state = setup();
+    state.old.css.display = 'block';
+    state.old.getBoundingClientRect = () => ({ left: 347, top: 116, width: 989, height: 556 });
+    state.parent.querySelectorAll = () => [state.old];
+    state.panel.inView = true;
+    state.panel.s();
+    return state;
+}
+
+test('hover controls survive a preview hiding its video and leaving intersection', () => {
+    const { panel, old } = preview();
+    panel.setInteraction('pointerInside', true);
+    old.css.display = 'none';
+    panel.inView = false;
+    panel.s();
+    assert.equal(panel.g.style.display, 'block');
+    assert.equal(panel.g.style.transform, 'translate3d(355px,124px,0)');
+    panel.setInteraction('pointerInside', false);
+    assert.equal(panel.g.style.display, 'none');
+});
+
+test('keyboard controls survive video removal and still follow the card during scrolling', () => {
+    const { panel, old, parent } = preview();
+    old.isConnected = false;
+    old.parentElement = null;
+    panel.inView = false;
+    parent.getBoundingClientRect = () => ({ left: 347, top: 50, right: 1336, bottom: 606, width: 989, height: 556 });
+    panel.setInteraction('focusInside', true);
+    assert.equal(panel.g.style.display, 'block');
+    assert.equal(panel.g.style.transform, 'translate3d(355px,58px,0)');
+    panel.setInteraction('focusInside', false);
+    assert.equal(panel.g.style.display, 'none');
+});
+
+test('active preview controls hide when their card disappears or scrolls offscreen', () => {
+    const { panel, parent } = preview();
+    panel.setInteraction('pointerInside', true);
+    parent.getBoundingClientRect = () => ({ left: 347, top: -700, right: 1336, bottom: -144, width: 989, height: 556 });
+    panel.s();
+    assert.equal(panel.g.style.display, 'none');
+    parent.isConnected = false;
+    panel.l.isConnected = false;
+    panel.s();
+    assert.equal(panel.g.style.display, 'none');
+});
+
+test('interaction cannot override closing, pausing, or a hidden document', () => {
+    for (const disable of [state => { state.panel.closed = true; },
+        state => { state.panel.v.C = false; }, state => { state.context.document.hidden = true; }]) {
+        const state = preview();
+        state.panel.setInteraction('pointerInside', true);
+        disable(state);
+        state.panel.s();
+        assert.equal(state.panel.g.style.display, 'none');
+    }
 });
 
 test('a repeated resource reuses its existing panel by URL', () => {

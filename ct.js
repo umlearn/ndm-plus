@@ -33,6 +33,17 @@ function neatMediaHasLayout(media) {
         style.visibility !== 'hidden' && style.visibility !== 'collapse';
 }
 var M = L.prototype;
+M.setInteraction = function (type, active) {
+    this[type] = active;
+    this.s();
+};
+M.interactionRect = function () {
+    var saved = this.previewAnchor;
+    if (!(this.pointerInside || this.focusInside) || !saved || !neatMediaHasLayout(saved.parent)) return null;
+    var bounds = saved.parent.getBoundingClientRect();
+    return { left: bounds.left + saved.left, top: bounds.top + saved.top,
+        width: saved.width, height: saved.height };
+};
 M.refreshAnchor = function () {
     if (!this.l || neatMediaHasLayout(this.l)) return;
     // Players may retain a hidden video after switching ads or playback engines.
@@ -49,6 +60,7 @@ M.refreshAnchor = function () {
         tracker.intersection.unobserve(this.l);
     }
     this.l = next;
+    this.previewAnchor = null;
     this.mediaParent = next.parentElement;
     this.clipParents = null;
     this.inView = undefined;
@@ -59,14 +71,25 @@ M.refreshAnchor = function () {
 };
 M.s = function () {
     if (!this.g) return;
-    if (!this.closed && this.v.C && !document.hidden) this.refreshAnchor();
-    var visible = this.v.C && !this.closed && !document.hidden && this.inView !== false;
+    // Hover previews can remove their video as soon as the pointer enters our
+    // root-level overlay. Keep the controls anchored to the card while in use.
+    var heldRect = this.interactionRect();
+    if (!heldRect && !this.closed && this.v.C && !document.hidden) this.refreshAnchor();
+    var visible = this.v.C && !this.closed && !document.hidden && (heldRect || this.inView !== false);
     var left = 12, top = 12;
     if (this.l && visible) {
-        if (!this.l.isConnected) visible = false;
+        if (!heldRect && !this.l.isConnected) visible = false;
         else {
-            var rect = this.l.getBoundingClientRect();
-            var style = getComputedStyle(this.l);
+            var rect = heldRect || this.l.getBoundingClientRect();
+            var style = getComputedStyle(heldRect ? this.previewAnchor.parent : this.l);
+            if (!heldRect && neatMediaHasLayout(this.l)) {
+                var container = this.l.parentElement;
+                if (container && container !== document.body && container !== document.documentElement && neatMediaHasLayout(container)) {
+                    var bounds = container.getBoundingClientRect();
+                    this.previewAnchor = { parent: container, left: rect.left - bounds.left,
+                        top: rect.top - bounds.top, width: rect.width, height: rect.height };
+                } else this.previewAnchor = null;
+            }
             // Keep the icon inset 8px from the video's upper-left corner.
             left = rect.left + 8;
             top = rect.top + 8;
@@ -75,7 +98,7 @@ M.s = function () {
                 top >= 0 && top + 28 <= innerHeight && left >= 0 && left + 30 <= innerWidth;
             if (!this.clipParents) {
                 this.clipParents = [];
-                for (var parent = this.l.parentElement; parent; parent = parent.parentElement) {
+                for (var parent = heldRect ? this.previewAnchor.parent : this.l.parentElement; parent; parent = parent.parentElement) {
                     // The root scrolling elements are bounded by the viewport above. On
                     // YouTube, body can have zero layout height while its video is visible.
                     if (parent === document.body || parent === document.documentElement) continue;
@@ -151,7 +174,15 @@ M.create = function () {
     var self = this;
     root.querySelector('.trigger').onclick = function () { self.panel.classList.toggle('expanded'); };
     root.querySelector('.close').onclick = function () { self.closed = true; self.s(); };
-    this.panel.addEventListener('pointerleave', function () { self.I(true); });
+    this.panel.addEventListener('pointerenter', function () { self.setInteraction('pointerInside', true); });
+    this.panel.addEventListener('pointerleave', function () {
+        self.I(true);
+        self.setInteraction('pointerInside', false);
+    });
+    this.panel.addEventListener('focusin', function () { self.setInteraction('focusInside', true); });
+    this.panel.addEventListener('focusout', function (event) {
+        self.setInteraction('focusInside', !!event.relatedTarget && self.panel.contains(event.relatedTarget));
+    });
     this.panel.addEventListener('keydown', function (event) {
         if (event.key === 'Escape') {
             self.I(true);
@@ -423,6 +454,7 @@ if (!window.m) {
     }; M.findResourcePanel = function (resource) {
         return findNeatResourcePanel(this, resource);
     }; M.bindPanelToMedia = function (panel, anchor) {
+        if (panel.l !== anchor) panel.previewAnchor = null;
         var nextId = this.ha(anchor);
         if (!nextId || panel.oa === nextId) {
             panel.l = anchor;
