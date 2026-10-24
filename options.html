@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NDM Plus Settings</title>
+    <link rel="stylesheet" href="options.css">
+    <script src="capture-policy.js" defer></script>
+    <script src="options.js" defer></script>
+</head>
+<body>
+    <main class="settings-shell">
+        <header class="page-header">
+            <img src="img/icon48.png" width="44" height="44" alt="">
+            <div>
+                <span class="eyebrow">NDM Plus</span>
+                <h1>Download capture settings</h1>
+            </div>
+        </header>
+
+        <section class="panel global-panel">
+            <div class="panel-copy">
+                <h2>Automatic capture</h2>
+                <p>Hand downloadable files to Neat Download Manager and show media download panels on websites.</p>
+            </div>
+            <button class="switch" id="global-toggle" type="button" role="switch" aria-checked="true" aria-label="Automatic capture">
+                <span class="switch-thumb"></span>
+            </button>
+        </section>
+
+        <section class="panel sites-panel">
+            <div class="section-heading">
+                <div>
+                    <h2>Paused sites</h2>
+                    <p>Automatic capture and video download panels stay off on these sites. Chrome handles downloads normally.</p>
+                </div>
+                <span class="count" id="site-count">0</span>
+            </div>
+
+            <form class="add-site" id="add-site-form">
+                <label class="sr-only" for="new-host">Website domain</label>
+                <input id="new-host" type="text" placeholder="example.com" autocomplete="off" spellcheck="false">
+                <button type="submit" id="add-button">Pause site</button>
+            </form>
+            <p class="validation" id="validation" role="status"></p>
+            <p class="hint">A domain also covers its subdomains. You can paste a full URL.</p>
+
+            <ul id="blocked-list" class="site-list"></ul>
+        </section>
+
+        <footer>
+            Manual “Download” actions remain available, even on paused sites.
+        </footer>
+    </main>
+</body>
+</html>
