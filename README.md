@@ -40,6 +40,14 @@ NDM Plus 是一款面向 **Neat Download Manager** 用户的非官方 Chromium �
   <sub>工具栏面板提供全局自动接管和当前网站开关，并可快速进入暂停站点管理。</sub>
 </p>
 
+### 视频下载入口
+
+视频加载后，NDM Plus 会在播放器左上角显示低干扰下载按钮。将鼠标移到按钮上可以展开识别到的媒体资源，并选择需要交给 NDM 的版本。
+
+<p align="center">
+  <img width="480" src="docs/img/video-capdemo.gif" alt="NDM Plus 视频下载入口演示">
+</p>
+
 ## ✨ 功能
 
 - 自动识别网页中的普通文件、图片、音视频和 HLS 播放列表，并发送到 Neat Download Manager
@@ -105,14 +113,6 @@ Firefox 用户可以使用社区中的 [iiHawe/NeatDownloadManager-Extension](ht
 
 <p align="center">
   <sub>设置页集中管理界面语言、全局自动接管和暂停网站；域名规则同时覆盖子域名。</sub>
-</p>
-
-### 视频下载入口
-
-视频加载后，NDM Plus 会在播放器左上角显示低干扰下载按钮。将鼠标移到按钮上可以展开识别到的媒体资源，并选择需要交给 NDM 的版本。
-
-<p align="center">
-  <img width="480" src="docs/img/video-capdemo.gif" alt="NDM Plus 视频下载入口演示">
 </p>
 
 ## 🔐 权限与隐私
