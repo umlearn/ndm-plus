@@ -21,23 +21,23 @@
 
 ## NDM Plus
 
-NDM Plus 是一款面向 **Neat Download Manager** 用户的非官方 Chromium 浏览器扩展。它会在浏览网页时识别普通下载和媒体资源，把链接交给本机的 Neat Download Manager，并在视频附近提供一个轻量的下载浮条。
+NDM Plus 是一款面向 **Neat Download Manager** 用户的非官方 Chromium 浏览器扩展。它会在浏览网页时识别普通下载和媒体资源，把链接交给本机的 Neat Download Manager，并在视频附近提供一个轻量的下载入口。
 
 相比原扩展，NDM Plus 增加了全局暂停、当前网站暂停和暂停域名管理。对于不需要自动接管的网站，可以让下载重新交给浏览器处理，同时保留右键手动发送到 NDM 的入口。
 
-扩展使用 **Manifest V3、原生 JavaScript、HTML 与 CSS** 构建，无需编译或安装第三方运行时。NDM Plus 不是下载器本身，使用前需要在电脑上安装并运行 [Neat Download Manager](https://www.neatdownloadmanager.com/)。
+扩展使用 **Manifest V3、原生 JavaScript、HTML 与 CSS** 构建，界面支持简体中文和 English，无需编译或安装第三方运行时。NDM Plus 不是下载器本身，使用前需要在电脑上安装并运行 [Neat Download Manager](https://www.neatdownloadmanager.com/)。
 
 > NDM Plus 是独立维护的社区版本，与 Neat Download Manager 官方无隶属关系。
 
-## 前后对比
+## 界面预览
 
 <p align="center">
-  <img width="49%" src="im/之前.jpeg" alt="启用网站暂停前的下载浮条">
-  <img width="49%" src="im/之后.jpeg" alt="启用网站暂停后的页面">
+  <img width="44%" src="docs/img/memu-cn.png" alt="NDM Plus 中文工具栏面板">
+  <img width="44%" src="docs/img/menu-en.png" alt="NDM Plus English toolbar panel">
 </p>
 
 <p align="center">
-  <sub>左侧：未暂停网站时，页面中的媒体可能显示多个下载浮条；右侧：暂停不需要接管的网站后，页面保持干净。</sub>
+  <sub>工具栏面板提供全局自动接管和当前网站开关，并可快速进入暂停站点管理。</sub>
 </p>
 
 ## ✨ 功能
@@ -48,6 +48,8 @@ NDM Plus 是一款面向 **Neat Download Manager** 用户的非官方 Chromium �
 - 支持当前网站快捷暂停，无需打开设置页
 - 支持集中管理暂停域名，一条规则同时覆盖它的子域名
 - 暂停期间继续缓存已发现的媒体，恢复后无需刷新页面
+- 界面语言默认跟随浏览器，也可手动选择中文或英文
+- 提供独立的翻译注册机制，方便继续添加其他语言
 - 支持通过右键菜单 **Download** 手动把链接发送到 NDM
 - 支持按住 `Ctrl`、`Alt`、`Shift` 或 `⌘` 点击链接，对单次下载绕过自动接管
 - 优化 HLS、TS 和小体积完整视频的识别，并优先使用有意义的页面或视频标题
@@ -84,13 +86,34 @@ Firefox 用户可以使用社区中的 [iiHawe/NeatDownloadManager-Extension](ht
 ## 🕹 使用
 
 1. 点击浏览器工具栏中的 NDM Plus 图标。
-2. 使用 **Automatic capture** 开启或暂停全局自动接管。
-3. 使用 **Capture on this site** 单独暂停当前网站。
-4. 点击 **Manage paused sites**，添加或移除需要长期暂停的域名。
+2. 使用 **自动接管下载 / Automatic capture** 开启或暂停全局自动接管。
+3. 使用 **在此网站接管下载 / Capture on this site** 单独暂停当前网站。
+4. 点击 **管理暂停站点 / Manage paused sites**，添加或移除需要长期暂停的域名。
+5. 在设置页的 **界面语言 / Language** 中选择“自动”或手动切换中文、英文。
 
 暂停只影响自动接管，不会禁用右键菜单中的手动下载入口。视频浮条首次出现时保持低透明度，鼠标悬停或键盘聚焦后显示完整资源列表；点击 `×` 可以隐藏当前浮条，刷新页面后恢复。
 
+新增其他界面语言的方法见 [LOCALIZATION.md](./LOCALIZATION.md)。
+
 如果 Neat Download Manager 没有响应，请先确认桌面应用正在运行。临时绕过某个链接时，可以按住 `Ctrl`、`Alt`、`Shift` 或 `⌘` 再点击它。
+
+<p align="center">
+  <a href="docs/img/settings.png">
+    <img width="900" src="docs/img/settings.png" alt="NDM Plus 设置页：语言、自动接管和暂停站点">
+  </a>
+</p>
+
+<p align="center">
+  <sub>设置页集中管理界面语言、全局自动接管和暂停网站；域名规则同时覆盖子域名。</sub>
+</p>
+
+### 视频下载入口
+
+视频加载后，NDM Plus 会在播放器左上角显示低干扰下载按钮。将鼠标移到按钮上可以展开识别到的媒体资源，并选择需要交给 NDM 的版本。
+
+<p align="center">
+  <img width="480" src="docs/img/video-capdemo.gif" alt="NDM Plus 视频下载入口演示">
+</p>
 
 ## 🔐 权限与隐私
 
@@ -105,6 +128,7 @@ Firefox 用户可以使用社区中的 [iiHawe/NeatDownloadManager-Extension](ht
 - `bg.js`：Service Worker、下载请求识别、NDM 通信和 HLS 处理
 - `ct.js`：网页内的媒体面板、播放器关联和交互
 - `capture-policy.js`：全局与网站暂停规则
+- `i18n.js`：浏览器语言检测、手动语言选择与翻译注册
 - `media.js`：媒体分类和 HLS 清单解析
 - `popup.*`：工具栏状态面板
 - `options.*`：自动接管与暂停站点设置页
@@ -116,7 +140,7 @@ Firefox 用户可以使用社区中的 [iiHawe/NeatDownloadManager-Extension](ht
 node --test tests/*.test.js
 ```
 
-测试覆盖暂停策略、下载识别、HLS 解析、媒体面板定位、BFCache 生命周期和快捷键绕过等核心逻辑。
+测试覆盖暂停策略、下载识别、HLS 解析、媒体面板定位、重复资源去重、BFCache 生命周期、快捷键绕过和多语言回退等核心逻辑。
 
 ## 系统要求
 
