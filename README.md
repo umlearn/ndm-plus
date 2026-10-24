@@ -3,11 +3,15 @@
 </p>
 
 <p align="center">
-  <strong>简体中文</strong> ·
-  <a href="#功能">功能</a> ·
-  <a href="#安装">安装</a> ·
-  <a href="#使用">使用</a> ·
-  <a href="#开发">开发</a>
+  <strong>简体中文</strong> · <a href="README.en.md">English</a>
+</p>
+
+<p align="center">
+  <a href="#界面预览">界面预览</a> ·
+  <a href="#-功能">功能</a> ·
+  <a href="#-安装">安装</a> ·
+  <a href="#-使用">使用</a> ·
+  <a href="#-开发">开发</a>
 </p>
 
 <p align="center">
@@ -159,7 +163,3 @@ node --test tests/*.test.js
 ## 致谢
 
 感谢 Neat Download Manager 原扩展作者，以及 [yizhimuzhuozi](https://github.com/yizhimuzhuozi)、[Leenshady](https://github.com/Leenshady) 和所有提交代码、反馈问题的贡献者。上游来源和贡献记录保留在 Git 提交历史中。
-
-## 许可证
-
-当前仓库尚未提供独立许可证文件。项目包含来自上游 NeatDownloadManager Extension 的代码和资源；在明确再分发与修改授权前，请不要把本项目视为已经采用开源许可证。
