@@ -56,6 +56,7 @@ function setup(options = {}) {
             onChanged: { addListener() {} } }
     };
     const context = vm.createContext({ window, document, chrome, URL, setTimeout, clearTimeout });
+    vm.runInContext(fs.readFileSync(path.join(__dirname, '..', 'i18n.js'), 'utf8'), context);
     vm.runInContext(fs.readFileSync(path.join(__dirname, '..', 'capture-policy.js'), 'utf8'), context);
     vm.runInContext(fs.readFileSync(path.join(__dirname, '..', 'ct.js'), 'utf8'), context);
     return { window, document, context, ports, bypassMessages,

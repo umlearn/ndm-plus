@@ -18,6 +18,7 @@
   "content_scripts": [
     {
       "js": [
+        "i18n.js",
         "capture-policy.js",
         "ct.js"
       ],

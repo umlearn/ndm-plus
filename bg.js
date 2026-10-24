@@ -1,6 +1,7 @@
-importScripts("media.js", "capture-policy.js");
+importScripts("i18n.js", "media.js", "capture-policy.js");
 var blockedHosts = [];
 var autoCaptureEnabled = true;
+var uiLanguage = "auto";
 var bypassUrls = new Map();
 var backgroundController;
 var actionIcons = {
@@ -8,10 +9,12 @@ var actionIcons = {
     off: { 16: "img/icon16-off.png", 32: "img/icon32-off.png", 48: "img/icon48-off.png" }
 };
 function updateCaptureSettings() {
-    chrome.storage.local.get(["autoCaptureEnabled", "blockedHosts"], function (result) {
+    chrome.storage.local.get(["autoCaptureEnabled", "blockedHosts", NeatI18n.STORAGE_KEY], function (result) {
         autoCaptureEnabled = result.autoCaptureEnabled !== false;
         blockedHosts = Array.isArray(result.blockedHosts) ? result.blockedHosts : [];
-        if (backgroundController) backgroundController.setCaptureState(autoCaptureEnabled);
+        uiLanguage = result[NeatI18n.STORAGE_KEY] || "auto";
+        NeatI18n.setLanguage(uiLanguage);
+        if (backgroundController) backgroundController.applyLanguage();
     });
 }
 updateCaptureSettings();
@@ -19,8 +22,12 @@ chrome.storage.onChanged.addListener(function (changes, namespace) {
     if (namespace !== "local") return;
     if (changes.autoCaptureEnabled) autoCaptureEnabled = changes.autoCaptureEnabled.newValue !== false;
     if (changes.blockedHosts) blockedHosts = Array.isArray(changes.blockedHosts.newValue) ? changes.blockedHosts.newValue : [];
-    if (backgroundController && (changes.autoCaptureEnabled || changes.blockedHosts)) {
-        backgroundController.setCaptureState(autoCaptureEnabled);
+    if (changes[NeatI18n.STORAGE_KEY]) {
+        uiLanguage = changes[NeatI18n.STORAGE_KEY].newValue || "auto";
+        NeatI18n.setLanguage(uiLanguage);
+    }
+    if (backgroundController && (changes.autoCaptureEnabled || changes.blockedHosts || changes[NeatI18n.STORAGE_KEY])) {
+        backgroundController.applyLanguage();
     }
 });
 function isURLBlocked(url, initiator) {
@@ -30,7 +37,7 @@ function updateContextMenu(tabId) {
     chrome.tabs.get(tabId, function (tab) {
         if (chrome.runtime.lastError || !tab || !tab.url) return;
         var isBlocked = isURLBlocked(tab.url);
-        var title = isBlocked ? "Resume on this site" : "Pause on this site";
+        var title = isBlocked ? NeatI18n.t("context.resumeSite") : NeatI18n.t("context.pauseSite");
         chrome.contextMenus.update("NDM_BlockSite", { title: title });
     });
 }
@@ -80,14 +87,25 @@ function M() { for (var a = {}, b = 0; b < arguments.length; b++)for (var c in a
 async function R(a, b) { var c = null, d = {}, e, f = b && b["1"] || "GET"; if (b && (e = b.o)) for (var g = 0; g < e.length; g++)N(e[g].name.toLowerCase(), "x-") && (d[e[g].name] = e[g].value); if ("POST" == f && b) { try { S(b, b), b["10"] && (d["Content-Type"] = b["10"]) } catch (m) { } b && b.postData && (c = b.postData) } try { const m = await fetch(a["2"], { method: f, credentials: "include", headers: new Headers(d), body: c }); if (m.ok) { let u = await m.text(); (a.S || function () { })(u) } } catch (m) { } }
 function T() { this["1"] = "GET"; this["2"] = ""; this["3"] = ""; this["4"] = ""; this["5"] = ""; this["6"] = "normal"; this["7"] = 0; this["8"] = ""; this["9"] = ""; this["10"] = ""; this.cookies = this["11"] = ""; this.postData = null }
 function U() {
-    var a = this.constructor.prototype, b; for (b in a) this[b] = a[b].bind(this); this.H = {}; this.h = {}; this.m = {}; this.hlsSeen = new Map(); this.hlsProbes = new Map(); this.nextHlsProbe = 1; this.sentMedia = new Map(); this.pendingMedia = new Map(); this.fa = 1; this.u = ""; this.C = !1; chrome.contextMenus.removeAll(); chrome.contextMenus.create({ title: "Download", id: "NDM_CtxMenu", contexts: ["link", "image"] }); chrome.contextMenus.create({ id: "NDM_BlockSite", title: "Pause on this site", contexts: ["all"] }); this.j(chrome.contextMenus.onClicked, this.W); this.j(chrome.downloads.onCreated, this.X); this.j(chrome.runtime.onConnect, this.Z); this.j(chrome.webRequest.onBeforeRequest, this.T, {
+    var a = this.constructor.prototype, b; for (b in a) this[b] = a[b].bind(this); this.H = {}; this.h = {}; this.m = {}; this.hlsSeen = new Map(); this.hlsProbes = new Map(); this.nextHlsProbe = 1; this.sentMedia = new Map(); this.pendingMedia = new Map(); this.fa = 1; this.u = ""; this.C = !1; NeatI18n.setLanguage(uiLanguage); this.createContextMenus(); this.j(chrome.contextMenus.onClicked, this.W); this.j(chrome.downloads.onCreated, this.X); this.j(chrome.runtime.onConnect, this.Z); this.j(chrome.webRequest.onBeforeRequest, this.T, {
         urls: ["http://*/*", "https://*/*", "ftp://*/*"],
         types: w
     }, ["requestBody"]); this.j(chrome.webRequest.onBeforeSendHeaders, this.U, { urls: ["https://*/*", "http://*/*"], types: w }, ["requestHeaders"]); this.j(chrome.webRequest.onHeadersReceived, this.V, { urls: ["<all_urls>"], types: w }, ["responseHeaders"]); this.j(chrome.webRequest.onCompleted, this.N, { urls: ["<all_urls>"] }); this.j(chrome.webRequest.onErrorOccurred, this.N, { urls: ["<all_urls>"] }); this.j(chrome.webNavigation.onHistoryStateUpdated, this.Y);
     this.setCaptureState(autoCaptureEnabled); var c = this; this.F = !0; chrome.storage.local.get(["ShowMediaPanel"], function (d) { -1 == d.ShowMediaPanel && (c.F = !1) }); this.i = this.G = null; this.D = !1; this.L()
-} var V = U.prototype; V.setCaptureState = function (enabled) {
+} var V = U.prototype; V.createContextMenus = function () {
+    chrome.contextMenus.removeAll();
+    chrome.contextMenus.create({ title: NeatI18n.t("context.download"), id: "NDM_CtxMenu", contexts: ["link", "image"] });
+    chrome.contextMenus.create({ id: "NDM_BlockSite", title: NeatI18n.t("context.pauseSite"), contexts: ["all"] });
+}; V.applyLanguage = function () {
+    NeatI18n.setLanguage(uiLanguage);
+    this.createContextMenus();
+    this.setCaptureState(autoCaptureEnabled);
+    chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
+        if (tabs && tabs[0]) updateContextMenu(tabs[0].id);
+    });
+}; V.setCaptureState = function (enabled) {
     this.v = enabled !== false;
-    chrome.action.setTitle({ title: this.v ? "NDM Plus: Auto capture on" : "NDM Plus: Auto capture paused" });
+    chrome.action.setTitle({ title: NeatI18n.t(this.v ? "action.on" : "action.paused") });
     chrome.action.setIcon({ path: this.v ? actionIcons.on : actionIcons.off });
     chrome.action.setBadgeText({ text: "" });
 }; V.Y = function (a) { var b = this.h[[a.tabId, a.frameId]]; b && b["2"] != a.url && (b.postMessage([11, a.url]), b["2"] = a.url) };

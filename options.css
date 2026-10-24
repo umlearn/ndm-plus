@@ -1,26 +1,32 @@
 :root {
     color-scheme: light dark;
-    --background: #f4f6f3;
+    --background: #f7f8fa;
     --surface: #ffffff;
-    --text: #172119;
-    --muted: #667368;
-    --border: #dfe6de;
-    --accent: #35a953;
-    --accent-strong: #23833c;
+    --text: #202124;
+    --muted: #5f6368;
+    --border: #dadce0;
+    --accent: #1a73e8;
+    --accent-strong: #0b57d0;
+    --brand: #1e8e3e;
+    --brand-strong: #176c2f;
+    --toggle-on: var(--brand);
     --danger: #b84034;
     --danger-soft: #fcebea;
-    --shadow: 0 16px 42px rgba(27, 50, 31, 0.08);
+    --shadow: 0 4px 18px rgba(60, 64, 67, 0.08);
 }
 
 @media (prefers-color-scheme: dark) {
     :root {
-        --background: #171b18;
-        --surface: #222923;
-        --text: #f3f7f3;
-        --muted: #a8b3aa;
-        --border: #354038;
-        --accent: #54c877;
-        --accent-strong: #9be5ad;
+        --background: #202124;
+        --surface: #292a2d;
+        --text: #e8eaed;
+        --muted: #9aa0a6;
+        --border: #3c4043;
+        --accent: #8ab4f8;
+        --accent-strong: #aecbfa;
+        --brand: #238636;
+        --brand-strong: #1a6d2d;
+        --toggle-on: var(--brand);
         --danger: #ff9e94;
         --danger-soft: #3b2523;
         --shadow: none;
@@ -36,15 +42,14 @@ body {
     min-height: 100vh;
     margin: 0;
     padding: 40px 20px;
-    background:
-        radial-gradient(circle at 15% 0%, color-mix(in srgb, var(--accent) 11%, transparent), transparent 32%),
-        var(--background);
+    background: var(--background);
     color: var(--text);
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
 }
 
 button,
-input {
+input,
+select {
     color: inherit;
     font: inherit;
 }
@@ -99,18 +104,44 @@ footer {
 
 .panel {
     border: 1px solid var(--border);
-    border-radius: 20px;
+    border-radius: 14px;
     background: var(--surface);
     box-shadow: var(--shadow);
 }
 
-.global-panel {
+.global-panel,
+.language-panel {
     display: flex;
     align-items: center;
     justify-content: space-between;
     gap: 24px;
     padding: 20px;
     margin-bottom: 16px;
+}
+
+.language-panel {
+    align-items: flex-start;
+}
+
+.select-wrap {
+    position: relative;
+    min-width: 210px;
+    flex: none;
+}
+
+.select-wrap svg {
+    position: absolute;
+    top: 50%;
+    right: 12px;
+    width: 16px;
+    height: 16px;
+    fill: none;
+    stroke: var(--muted);
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    stroke-width: 1.7;
+    pointer-events: none;
+    transform: translateY(-50%);
 }
 
 .panel-copy p,
@@ -158,7 +189,19 @@ input {
     outline: none;
 }
 
-input:focus {
+select {
+    width: 100%;
+    appearance: none;
+    padding: 9px 34px 9px 12px;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    background: var(--background);
+    outline: none;
+    cursor: pointer;
+}
+
+input:focus,
+select:focus {
     border-color: var(--accent);
     box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 18%, transparent);
 }
@@ -167,14 +210,14 @@ input:focus {
     padding: 10px 16px;
     border: 0;
     border-radius: 10px;
-    background: var(--accent);
+    background: var(--brand);
     color: #fff;
     cursor: pointer;
     font-weight: 650;
 }
 
 #add-button:hover {
-    filter: brightness(0.95);
+    background: var(--brand-strong);
 }
 
 .validation {
@@ -240,13 +283,13 @@ input:focus {
     padding: 0;
     border: 0;
     border-radius: 999px;
-    background: #aeb8b0;
+    background: #9aa0a6;
     cursor: pointer;
     transition: background 140ms ease;
 }
 
 .switch[aria-checked="true"] {
-    background: var(--accent);
+    background: var(--toggle-on);
 }
 
 .switch:focus-visible,
@@ -273,8 +316,32 @@ input:focus-visible {
 }
 
 footer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
     padding: 18px 4px 0;
     text-align: center;
+}
+
+.project-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    color: var(--muted);
+    text-decoration: none;
+}
+
+.project-link:hover {
+    color: var(--brand-strong);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+}
+
+.project-link svg {
+    width: 16px;
+    height: 16px;
+    fill: currentColor;
 }
 
 .sr-only {
@@ -295,6 +362,16 @@ footer {
 
     .add-site {
         flex-direction: column;
+    }
+
+    .language-panel {
+        align-items: stretch;
+        flex-direction: column;
+        gap: 12px;
+    }
+
+    .select-wrap {
+        width: 100%;
     }
 
     #add-button {

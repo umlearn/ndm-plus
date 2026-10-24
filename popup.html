@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>NDM Plus</title>
     <link rel="stylesheet" href="popup.css">
+    <script src="i18n.js" defer></script>
     <script src="capture-policy.js" defer></script>
     <script src="popup.js" defer></script>
 </head>
@@ -13,9 +14,10 @@
         <img class="brand-icon" src="img/icon32.png" width="32" height="32" alt="">
         <div class="brand-copy">
             <strong>NDM Plus</strong>
-            <span>Download capture</span>
+            <span data-i18n="popup.subtitle">Download capture</span>
         </div>
-        <button class="icon-button" id="settings-button" type="button" aria-label="Open settings" title="Settings">
+        <button class="icon-button" id="settings-button" type="button" aria-label="Open settings" title="Settings"
+            data-i18n-aria-label="popup.settings" data-i18n-title="popup.settings">
             <svg viewBox="0 0 24 24" aria-hidden="true">
                 <path d="M19.4 13a7.8 7.8 0 0 0 .05-1 7.8 7.8 0 0 0-.05-1l2.05-1.6-1.95-3.38-2.42.98a7.5 7.5 0 0 0-1.73-1L15 3.5h-3.9L10.65 6a7.5 7.5 0 0 0-1.72 1L6.5 6 4.55 9.4 6.6 11a7.8 7.8 0 0 0-.05 1 7.8 7.8 0 0 0 .05 1l-2.05 1.6 1.95 3.38 2.43-.98c.53.42 1.1.76 1.72 1l.45 2.5h3.9l.45-2.5c.62-.24 1.2-.58 1.73-1l2.42.98 1.95-3.38L19.4 13ZM13.05 15a3 3 0 1 1 0-6 3 3 0 0 1 0 6Z"/>
             </svg>
@@ -26,28 +28,28 @@
         <section class="card global-card">
             <div class="card-heading">
                 <div>
-                    <span class="eyebrow">Global</span>
-                    <h1>Automatic capture</h1>
+                    <span class="eyebrow" data-i18n="popup.globalEyebrow">Global</span>
+                    <h1 data-i18n="popup.globalTitle">Automatic capture</h1>
                 </div>
                 <button class="switch" id="global-toggle" type="button" role="switch" aria-checked="true" aria-label="Automatic capture">
                     <span class="switch-thumb"></span>
                 </button>
             </div>
-            <p class="description" id="global-description">Downloads can be handed to Neat Download Manager automatically.</p>
+            <p class="description" id="global-description" data-i18n="popup.globalOn">Downloads can be handed to Neat Download Manager automatically.</p>
         </section>
 
         <section class="card site-card">
             <div class="site-heading">
                 <div class="site-title">
-                    <span class="eyebrow">Current website</span>
-                    <strong id="site-name">Checking…</strong>
+                    <span class="eyebrow" data-i18n="popup.currentWebsite">Current website</span>
+                    <strong id="site-name" data-i18n="popup.checking">Checking…</strong>
                 </div>
-                <span class="status" id="site-status">Checking</span>
+                <span class="status" id="site-status" data-i18n="popup.checking">Checking</span>
             </div>
             <div class="site-control">
                 <div>
-                    <h2>Capture on this site</h2>
-                    <p class="description" id="site-description">Checking this website’s setting.</p>
+                    <h2 data-i18n="popup.siteTitle">Capture on this site</h2>
+                    <p class="description" id="site-description" data-i18n="popup.siteChecking">Checking this website’s setting.</p>
                 </div>
                 <button class="switch" id="site-toggle" type="button" role="switch" aria-checked="false" aria-label="Capture downloads on this site">
                     <span class="switch-thumb"></span>
@@ -58,7 +60,7 @@
 
     <footer>
         <button class="text-button" id="manage-sites" type="button">
-            <span>Manage paused sites</span>
+            <span data-i18n="popup.manageSites">Manage paused sites</span>
             <svg viewBox="0 0 20 20" aria-hidden="true"><path d="m7.5 4.5 5 5-5 5"/></svg>
         </button>
     </footer>

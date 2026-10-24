@@ -79,6 +79,12 @@ test('persists the global capture state through the action icon', () => {
     assert.equal(action.badges.at(-1), '');
 });
 
+test('uses the stored language for the toolbar title', () => {
+    const { action } = setup(undefined, true, undefined,
+        'https://example.test/', 'Page', { uiLanguage: 'zh-CN' });
+    assert.equal(action.titles.at(-1), 'NDM Plus：自动接管已开启');
+});
+
 test('reads the Port disconnect error while clearing a cached page connection', () => {
     const { callbacks, context, port } = setup();
     let reads = 0;

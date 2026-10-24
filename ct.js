@@ -140,11 +140,11 @@ M.create = function () {
                 overflow-wrap: anywhere; }
             @media (prefers-reduced-motion: reduce) { .panel { transition: none; } }
         </style>
-        <section class="panel" aria-label="NDM Plus">
-            <div class="bar"><button class="trigger" type="button" aria-label="显示视频下载选项">
+        <section class="panel" aria-label="${NeatI18n.t("panel.label")}">
+            <div class="bar"><button class="trigger" type="button" aria-label="${NeatI18n.t("panel.showOptions")}">
                 <svg class="icon" viewBox="0 0 1024 1024" aria-hidden="true" focusable="false"><path d="M558 171.2v573.7c0 0.1 0.2 0.2 0.2 0.1l208-216.4c16.8-17.5 44.7-18.1 62.2-1.2 17.5 16.8 18.1 44.7 1.2 62.2L546.5 884.2c-8.3 8.6-19.8 13.5-31.7 13.5-12 0-23.4-4.9-31.7-13.5L198.3 588c-8.2-8.5-12.3-19.5-12.3-30.5 0-11.6 4.5-23.1 13.5-31.7 17.5-16.8 45.4-16.3 62.2 1.2l208 216.4c0.1 0.1 0.2 0 0.2-0.1V170.2c0-23.4 18.3-42.5 41.3-43.9 25.6-1.5 46.8 19.4 46.8 44.9z"/></svg>
-            </button><button class="close" type="button" aria-label="隐藏下载浮条" title="隐藏">×</button></div>
-            <div class="details"><ul class="list" aria-label="可下载媒体"></ul></div>
+            </button><button class="close" type="button" aria-label="${NeatI18n.t("panel.hide")}" title="${NeatI18n.t("panel.hide")}">×</button></div>
+            <div class="details"><ul class="list" aria-label="${NeatI18n.t("panel.mediaList")}"></ul></div>
         </section>`;
     this.panel = root.querySelector('.panel');
     this.list = root.querySelector('.list');
@@ -297,7 +297,7 @@ NeatPanelTracker.prototype.dispose = function () {
     this.entries.clear();
 };
 if (!window.m) {
-    var blockedHosts = [], autoCaptureEnabled = true, captureStateReady = false, pageController = null;
+    var blockedHosts = [], autoCaptureEnabled = true, uiLanguage = "auto", captureStateReady = false, pageController = null;
     function currentHostname() { return window.location.hostname || String(window.location.host || "").split(":")[0]; }
     function isCurrentPageCaptureEnabled() {
         return captureStateReady && NeatCapturePolicy.getSiteState(autoCaptureEnabled, currentHostname(), blockedHosts).enabled;
@@ -305,16 +305,23 @@ if (!window.m) {
     function applyStoredCaptureState(result) {
         autoCaptureEnabled = result.autoCaptureEnabled !== false;
         blockedHosts = Array.isArray(result.blockedHosts) ? result.blockedHosts : [];
+        uiLanguage = result[NeatI18n.STORAGE_KEY] || "auto";
+        NeatI18n.setLanguage(uiLanguage);
         captureStateReady = true;
         if (pageController) pageController.applyCaptureState();
     }
-    chrome.storage.local.get(["autoCaptureEnabled", "blockedHosts"], applyStoredCaptureState);
+    chrome.storage.local.get(["autoCaptureEnabled", "blockedHosts", NeatI18n.STORAGE_KEY], applyStoredCaptureState);
     chrome.storage.onChanged.addListener(function (changes, namespace) {
-        if (namespace !== "local" || !changes.autoCaptureEnabled && !changes.blockedHosts) return;
+        if (namespace !== "local" || !changes.autoCaptureEnabled && !changes.blockedHosts && !changes[NeatI18n.STORAGE_KEY]) return;
         if (changes.autoCaptureEnabled) autoCaptureEnabled = changes.autoCaptureEnabled.newValue !== false;
         if (changes.blockedHosts) blockedHosts = Array.isArray(changes.blockedHosts.newValue) ? changes.blockedHosts.newValue : [];
+        var languageChanged = Boolean(changes[NeatI18n.STORAGE_KEY]);
+        if (languageChanged) {
+            uiLanguage = changes[NeatI18n.STORAGE_KEY].newValue || "auto";
+            NeatI18n.setLanguage(uiLanguage);
+        }
         captureStateReady = true;
-        if (pageController) pageController.applyCaptureState();
+        if (pageController) languageChanged ? pageController.applyLanguage() : pageController.applyCaptureState();
     });
     var N = function () {
         this.Y = null; this.D = {}; this.h = {}; this.M = !1; this.U = this.T = -1; this.Counter = 1; this.j = null; this.aa = 0; this.C = !0; this.ea = []; this.port = null; this.pageHidden = false; this.captureCache = new Map(); this.connectPort(); this.ba = Math.ceil(2E6 * Math.random()); if (u()) { var a = this; this.ma = new window.MutationObserver(function (b) { b.forEach(function (d) { a.ja(d.target) }) }); this.ma.observe(document, { childList: !0, subtree: !0 }) } this.m(window,
@@ -456,6 +463,10 @@ if (!window.m) {
             var self = this;
             setTimeout(function () { if (isCurrentPageCaptureEnabled()) self.X(); }, 0);
         }
+    }; M.applyLanguage = function () {
+        if (!this.h || !Object.keys(this.h).length) return;
+        this.ua();
+        if (isCurrentPageCaptureEnabled()) this.applyCaptureState();
     }; M.G = function (resource, pageUrl, anchor) {
         // NDM does not support YouTube playback downloads; keep its player clear.
         if (/(^|\.)(youtube\.com|youtube-nocookie\.com)$/i.test(location.hostname)) return;
@@ -524,7 +535,7 @@ if (!window.m) {
         var b = this; switch (a[0]) {
             case 17: b.probeHls(a[1], a[2]); break;
             case 1: b.G(a[1],
-                a[2], null, !0); break; case 3: (a = a[1]) && (b.Y = a); b.va(); break; case 5: b.$(); break; case 11: b.ua(); setTimeout(function () { b.X() }, 2500); break; case 13: a = a[1]; a != b.C && (b.C = a, b.$()); break; case 15: alert("NDM Plus Can't Connect to Neat Download Manager Application, You Can : \r\n1- Check If Neat Download Manager is Running.\r\n2- or Hold down Delete-Key and click on the Download link.\r\n3- or Disable NDM Plus temporarily."); break;
+                a[2], null, !0); break; case 3: (a = a[1]) && (b.Y = a); b.va(); break; case 5: b.$(); break; case 11: b.ua(); setTimeout(function () { b.X() }, 2500); break; case 13: a = a[1]; a != b.C && (b.C = a, b.$()); break; case 15: alert(NeatI18n.t("panel.connectionError")); break;
         }
     };
     M.m = function (a) { var b = Array.prototype.slice.call(arguments); b[2] = b[2].bind(this); this.ea.push(b); a.addEventListener.apply(a, b.slice(1)) }; M.la = function () { for (var a in this.h) this.h[a].I(!0) }; M.ua = function () {
