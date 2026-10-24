@@ -36,8 +36,8 @@ The extension is built with **Manifest V3, vanilla JavaScript, HTML, and CSS**. 
 ## Interface preview
 
 <p align="center">
-  <img width="44%" src="docs/img/memu-cn.png" alt="NDM Plus Chinese toolbar panel">
-  <img width="44%" src="docs/img/menu-en.png" alt="NDM Plus English toolbar panel">
+  <img width="44%" src="docs/img/memu-cn.png?v=2" alt="NDM Plus Chinese toolbar panel">
+  <img width="44%" src="docs/img/memu-en.png?v=2" alt="NDM Plus English toolbar panel">
 </p>
 
 <p align="center">

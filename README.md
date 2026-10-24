@@ -36,8 +36,8 @@ NDM Plus 是一款面向 **Neat Download Manager** 用户的非官方 Chromium �
 ## 界面预览
 
 <p align="center">
-  <img width="44%" src="docs/img/memu-cn.png" alt="NDM Plus 中文工具栏面板">
-  <img width="44%" src="docs/img/menu-en.png" alt="NDM Plus English toolbar panel">
+  <img width="44%" src="docs/img/memu-cn.png?v=2" alt="NDM Plus 中文工具栏面板">
+  <img width="44%" src="docs/img/memu-en.png?v=2" alt="NDM Plus English toolbar panel">
 </p>
 
 <p align="center">
