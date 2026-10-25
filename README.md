@@ -84,6 +84,8 @@ NDM Plus 是一款面向 **Neat Download Manager** 用户的非官方 Chromium �
 
 请不要删除扩展文件夹，否则浏览器会在下次启动时无法加载扩展。更新时重新下载 Release、解压并替换旧文件夹即可。
 
+设置页底部显示当前扩展版本。点击“检查更新”可查询 GitHub 最新正式版本；发现新版后点击“查看更新”进入发布页。更新后需在扩展管理页重新加载扩展，并刷新网页。
+
 ### 从源码安装
 
 ```sh
@@ -134,6 +136,7 @@ Firefox 用户可以使用社区中的 [iiHawe/NeatDownloadManager-Extension](ht
 - `capture-policy.js`：全局与网站暂停规则
 - `i18n.js`：浏览器语言检测、手动语言选择与翻译注册
 - `media.js`：媒体分类和 HLS 清单解析
+- `updates.js`：GitHub 正式版本检查与版本号比较
 - `popup.*`：工具栏状态面板
 - `options.*`：自动接管与暂停站点设置页
 - `tests/`：基于 Node.js 原生测试运行器的单元测试

@@ -84,6 +84,8 @@ Download the latest `NDM-Plus-<version>.zip` from [GitHub Releases](https://gith
 
 Do not delete the extension folder, or the browser will not be able to load it on the next launch. To update, download the new release, extract it, and replace the previous folder.
 
+The settings footer shows your installed version. Click **Check for updates** to query the latest stable GitHub release, then **View update** to open its release page. After replacing the extension folder, reload the extension in the browser's extension manager and refresh webpages.
+
 ### Install from source
 
 ```sh
@@ -134,6 +136,7 @@ The project is maintained as a native browser extension with no package manager 
 - `capture-policy.js`: global and per-site pause rules
 - `i18n.js`: browser language detection, manual language selection, and translation registration
 - `media.js`: media classification and HLS manifest parsing
+- `updates.js`: stable GitHub release checks and numeric version comparison
 - `popup.*`: toolbar status panel
 - `options.*`: automatic-capture and paused-site settings page
 - `tests/`: unit tests using the native Node.js test runner

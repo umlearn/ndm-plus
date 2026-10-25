@@ -10,10 +10,49 @@
     const input = document.getElementById("new-host");
     const validation = document.getElementById("validation");
     const list = document.getElementById("blocked-list");
+    const versionLabel = document.getElementById("extension-version");
+    const checkUpdates = document.getElementById("check-updates");
+    const updateStatus = document.getElementById("update-status");
+    const updateLink = document.getElementById("update-link");
+    const updateInstructions = document.getElementById("update-instructions");
+    const currentVersion = chrome.runtime.getManifest().version;
 
     let globalEnabled = true;
     let pausedHosts = [];
     let languagePreference = "auto";
+    let updateState = "idle";
+    let latestRelease = null;
+
+    function renderUpdates() {
+        versionLabel.textContent = `NDM Plus v${currentVersion}`;
+        checkUpdates.disabled = updateState === "checking";
+        checkUpdates.textContent = t(updateState === "checking" ? "options.checkingUpdates" : "options.checkUpdates");
+        const messages = {
+            checking: "options.checkingUpdates", current: "options.upToDate",
+            available: "options.updateAvailable", error: "options.updateFailed"
+        };
+        updateStatus.textContent = updateState === "idle" ? "" :
+            t(messages[updateState], { version: latestRelease && latestRelease.version });
+        const available = updateState === "available";
+        updateLink.hidden = !available && updateState !== "error";
+        updateLink.href = available ? latestRelease.url : NeatUpdates.RELEASES_URL;
+        updateLink.textContent = t(available ? "options.viewUpdate" : "options.openReleases");
+        updateInstructions.hidden = !available;
+    }
+
+    checkUpdates.addEventListener("click", async function () {
+        if (updateState === "checking") return;
+        updateState = "checking";
+        latestRelease = null;
+        renderUpdates();
+        try {
+            latestRelease = await NeatUpdates.check(currentVersion);
+            updateState = latestRelease.available ? "available" : "current";
+        } catch (error) {
+            updateState = "error";
+        }
+        renderUpdates();
+    });
 
     function setSwitch(checked) {
         globalToggle.setAttribute("aria-checked", String(Boolean(checked)));
@@ -104,6 +143,7 @@
         document.title = t("options.pageTitle");
         populateLanguageSelect();
         render();
+        renderUpdates();
     }
 
     globalToggle.addEventListener("click", function () {

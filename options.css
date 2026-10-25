@@ -344,6 +344,30 @@ footer {
     fill: currentColor;
 }
 
+.about-links {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: 6px 10px;
+    color: var(--muted);
+}
+
+.text-button {
+    border: 0;
+    background: transparent;
+    padding: 0;
+    color: var(--accent);
+    cursor: pointer;
+}
+
+.text-button:hover { text-decoration: underline; text-underline-offset: 3px; }
+.text-button:disabled { color: var(--muted); cursor: wait; text-decoration: none; }
+.text-button:focus-visible, .project-link:focus-visible { outline: 2px solid var(--accent); outline-offset: 4px; }
+.update-status { margin: 0; color: var(--muted); font-size: 12px; line-height: 1.6; }
+.update-status:empty { display: none; }
+footer [hidden] { display: none; }
+
 .sr-only {
     position: absolute;
     width: 1px;
